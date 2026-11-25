@@ -42,8 +42,8 @@ const players = [
   {id:'abqar',name:'Abdel Abqar',position:'CB',value:3500000},
   {id:'el-wafi',name:'Ayman El Wafi',position:'CB',value:2200000},
   {id:'kandouss',name:'Ismaël Kandouss',position:'CB',value:1800000},
-  {id:'regragui',name:'Hamza Regragui',position:'CB',value:450000},
-  {id:'samy-mmaee',name:'Samy Mmaee',position:'CB',value:450000},
+  {id:'saiss',name:'Romain Saïss',position:'CB',value:1200000},
+  {id:'masina',name:'Adam Masina',position:'CB',value:1000000},
 
   // Left-backs — LB
   {id:'el-karouani',name:'Souffian El Karouani',position:'LB',value:15000000},
@@ -67,7 +67,7 @@ const players = [
   {id:'moubarik',name:'Mehdi Moubarik',position:'DM',value:900000},
   {id:'jabrane',name:'Yahya Jabrane',position:'DM',value:800000},
   {id:'ait-bennasser',name:'Youssef Aït Bennasser',position:'DM',value:800000},
-  {id:'oudrhiri',name:'Amine Oudrhiri',position:'DM',value:235000},
+  {id:'zidani',name:'Ishak Zidani',position:'DM',value:375000},
 
   // Central midfielders — CM
   {id:'bouaddi',name:'Ayyoub Bouaddi',position:'CM',value:90000000},
@@ -91,7 +91,7 @@ const players = [
   {id:'ouazane',name:'Abdellah Ouazane',position:'CAM',value:1500000},
   {id:'ziani',name:'Ilyes Ziani',position:'CAM',value:1000000},
   {id:'essadak',name:'Hossam Essadak',position:'CAM',value:1000000},
-  {id:'ait-ouarkhane',name:'Khalid Aït Ouarkhane',position:'CAM',value:900000},
+  {id:'munir-haddadi',name:'Munir El Haddadi',position:'CAM',value:1500000},
 
   // Left wingers — LW
   {id:'abde',name:'Abde Ezzalzouli',position:'LW',value:40000000},
@@ -103,7 +103,7 @@ const players = [
   {id:'zaroury',name:'Anass Zaroury',position:'LW',value:7000000},
   {id:'idrissi',name:'Oussama Idrissi',position:'LW',value:6000000},
   {id:'harit',name:'Amine Harit',position:'LW',value:5000000},
-  {id:'chaira',name:'Ilyas Chaira',position:'LW',value:4000000},
+  {id:'sbai',name:'Amine Sbaï',position:'LW',value:6000000},
 
   // Right wingers — RW
   {id:'brahim',name:'Brahim Díaz',position:'RW',value:35000000},
