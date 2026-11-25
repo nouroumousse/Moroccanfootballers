@@ -89,9 +89,9 @@ const players = [
   {id:'boufal',name:'Sofiane Boufal',position:'CAM',value:1800000},
   {id:'zouhzouh',name:'Amine Zouhzouh',position:'CAM',value:1800000},
   {id:'ouazane',name:'Abdellah Ouazane',position:'CAM',value:1500000},
-  {id:'ziani',name:'Ilyes Ziani',position:'CAM',value:1000000},
-  {id:'essadak',name:'Hossam Essadak',position:'CAM',value:1000000},
   {id:'munir-haddadi',name:'Munir El Haddadi',position:'CAM',value:1500000},
+  {id:'essadak',name:'Hossam Essadak',position:'CAM',value:1000000},
+  {id:'ziani',name:'Ilyes Ziani',position:'CAM',value:1000000},
 
   // Left wingers — LW
   {id:'abde',name:'Abde Ezzalzouli',position:'LW',value:40000000},
@@ -101,9 +101,9 @@ const players = [
   {id:'sahraoui',name:'Osame Sahraoui',position:'LW',value:9000000},
   {id:'driouech',name:'Couhaib Driouech',position:'LW',value:7500000},
   {id:'zaroury',name:'Anass Zaroury',position:'LW',value:7000000},
+  {id:'sbai',name:'Amine Sbaï',position:'LW',value:6000000},
   {id:'idrissi',name:'Oussama Idrissi',position:'LW',value:6000000},
   {id:'harit',name:'Amine Harit',position:'LW',value:5000000},
-  {id:'sbai',name:'Amine Sbaï',position:'LW',value:6000000},
 
   // Right wingers — RW
   {id:'brahim',name:'Brahim Díaz',position:'RW',value:35000000},
