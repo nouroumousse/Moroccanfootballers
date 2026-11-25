@@ -1,263 +1,262 @@
-// Morocco national-team extended pool, using Transfermarkt's primary position and displayed market value.
-// Snapshot checked 25 November 2026. Market values are estimates, not transfer fees.
-const SOURCE_URL = 'https://www.transfermarkt.com/marokko/erweiterterkader/verein/3575';
-const CURRENT_SQUAD_URL = 'https://www.transfermarkt.com/morocco/kader/verein/3575/saison_id/2026';
+// Moroccan Footballers — value-ranked Moroccan player pool.
+// Snapshot: 25 November 2026. Values are Transfermarkt market-value estimates,
+// surfaced through ProMatch24 and Transfermarkt sources (not transfer fees).
+const DATA_SNAPSHOT = '25 Nov 2026';
+const PROMATCH_URL = 'https://promatch24.com/players/?country_id=17704';
+const TRANSFERMARKT_MARKET_URL = 'https://www.transfermarkt.com/spieler-statistik/wertvollstespieler/marktwertetop/mw/land_id/107';
+const TRANSFERMARKT_MOROCCO_URL = 'https://www.transfermarkt.com/marokko/erweiterterkader/verein/3575';
 
-const currentNames = new Set([
-  'Yassine Bounou','Ahmed Reda Tagnaouti','Munir El Kajoui',
-  'Chadi Riad','Issa Diop','Redouane Halhal','Marwane Saadane',
-  'Anass Salah-Eddine','Youssef Belammari',
-  'Achraf Hakimi','Noussair Mazraoui','Zakaria El Ouahdi',
-  'Sofyan Amrabat',
-  'Ayyoub Bouaddi','Neil El Aynaoui','Samir El Mourabet','Azzedine Ounahi',
-  'Ismael Saibari','Bilal El Khannouss','Amine Sbaï',
-  'Brahim Díaz','Chemsdine Talbi','Gessime Yassine','Ayoube Amaimouni-Echghouyab',
-  'Soufiane Rahimi','Ayoub El Kaabi'
-]);
-
-const rawPlayers = [
+const players = [
   // Goalkeepers
-  ['bounou','Yassine Bounou','GK',3000000],
-  ['benabid','El Mehdi Benabid','GK',1500000],
-  ['al-harrar','El Mehdi Al Harrar','GK',1000000],
-  ['tagnaouti','Ahmed Reda Tagnaouti','GK',1000000],
-  ['chihab','Salaheddine Chihab','GK',900000],
-  ['munir','Munir El Kajoui','GK',600000],
-  ['ghanimi','Rachid Ghanimi','GK',325000],
-  ['benchaouch','Yanis Benchaouch','GK',75000],
-  ['gomis','Ibrahim Gomis','GK',50000],
+  {id:'bounou',name:'Yassine Bounou',position:'GK',value:3000000},
+  {id:'benabid',name:'El Mehdi Benabid',position:'GK',value:1500000},
+  {id:'al-harrar',name:'El Mehdi Al Harrar',position:'GK',value:1000000},
+  {id:'tagnaouti',name:'Ahmed Reda Tagnaouti',position:'GK',value:1000000},
+  {id:'chihab',name:'Salaheddine Chihab',position:'GK',value:900000},
+  {id:'munir',name:'Munir El Kajoui',position:'GK',value:600000},
+  {id:'ghanimi',name:'Rachid Ghanimi',position:'GK',value:325000},
+  {id:'benchaouch',name:'Yanis Benchaouch',position:'GK',value:75000},
+  {id:'gomis',name:'Ibrahim Gomis',position:'GK',value:50000},
 
   // Centre-backs
-  ['aguerd','Nayef Aguerd','CB',15000000],
-  ['chadi-riad','Chadi Riad','CB',15000000],
-  ['ait-boudlal','Abdelhamid Aït Boudlal','CB',12000000],
-  ['diop','Issa Diop','CB',8000000],
-  ['halhal','Redouane Halhal','CB',5000000],
-  ['baouf',"Ismaël Baouf",'CB',3000000],
-  ['bouftini','Soufiane Bouftini','CB',1300000],
-  ['saiss','Romain Saïss','CB',1200000],
-  ['masina','Adam Masina','CB',1000000],
-  ['assal','Abdelhak Assal','CB',800000],
-  ['louadni','Marouane Louadni','CB',600000],
-  ['saadane','Marwane Saadane','CB',400000],
-  ['mchakhchekh','Mehdi Mchakhchekh','CB',325000],
-  ['elyamiq','Jawad El Yamiq','CB',300000],
+  {id:'ait-boudlal',name:'Abdelhamid Aït Boudlal',position:'CB',value:20000000},
+  {id:'chadi-riad',name:'Chadi Riad',position:'CB',value:15000000},
+  {id:'aguerd',name:'Nayef Aguerd',position:'CB',value:15000000},
+  {id:'diop',name:'Issa Diop',position:'CB',value:10000000},
+  {id:'halhal',name:'Redouane Halhal',position:'CB',value:5000000},
+  {id:'baouf',name:'Ismaël Baouf',position:'CB',value:3000000},
+  {id:'bouftini',name:'Soufiane Bouftini',position:'CB',value:1300000},
+  {id:'saiss',name:'Romain Saïss',position:'CB',value:1200000},
+  {id:'masina',name:'Adam Masina',position:'CB',value:1000000},
+  {id:'assal',name:'Abdelhak Assal',position:'CB',value:800000},
 
   // Left-backs
-  ['el-karouani','Souffian El Karouani','LB',15000000],
-  ['salah-eddine','Anass Salah-Eddine','LB',12000000],
-  ['zahouani','Fouad Zahouani','LB',1200000],
-  ['belammari','Youssef Belammari','LB',1200000],
-  ['bentayg','Mahmoud Bentayg','LB',1000000],
-  ['el-moussaoui','Hamza El Moussaoui','LB',700000],
+  {id:'el-karouani',name:'Souffian El Karouani',position:'LB',value:15000000},
+  {id:'salah-eddine',name:'Anass Salah-Eddine',position:'LB',value:12000000},
+  {id:'aznou',name:'Adam Aznou',position:'LB',value:6000000},
+  {id:'zahouani',name:'Fouad Zahouani',position:'LB',value:1200000},
+  {id:'belammari',name:'Youssef Belammari',position:'LB',value:1200000},
+  {id:'bentayg',name:'Mahmoud Bentayg',position:'LB',value:1000000},
+  {id:'el-moussaoui',name:'Hamza El Moussaoui',position:'LB',value:700000},
 
   // Right-backs
-  ['hakimi','Achraf Hakimi','RB',80000000],
-  ['mazraoui','Noussair Mazraoui','RB',18000000],
-  ['el-ouahdi','Zakaria El Ouahdi','RB',17000000],
-  ['el-hilali','Omar El Hilali','RB',15000000],
-  ['maamar','Ali Maamar','RB',2500000],
-  ['chibi','Mohamed Chibi','RB',1000000],
-  ['moufid','Mohamed Moufid','RB',1000000],
-  ['boulacsout','Mohamed Boulacsout','RB',700000],
+  {id:'hakimi',name:'Achraf Hakimi',position:'RB',value:80000000},
+  {id:'mazraoui',name:'Noussair Mazraoui',position:'RB',value:18000000},
+  {id:'el-ouahdi',name:'Zakaria El Ouahdi',position:'RB',value:17000000},
+  {id:'el-hilali',name:'Omar El Hilali',position:'RB',value:15000000},
+  {id:'maamar',name:'Ali Maamar',position:'RB',value:5000000},
+  {id:'chibi',name:'Mohamed Chibi',position:'RB',value:1000000},
+  {id:'moufid',name:'Mohamed Moufid',position:'RB',value:1000000},
+  {id:'boulacsout',name:'Mohamed Boulacsout',position:'RB',value:700000},
 
   // Defensive midfielders
-  ['targhalline','Oussama Targhalline','DM',16000000],
-  ['amrabat','Sofyan Amrabat','DM',10000000],
-  ['el-mahdioui','Aschraf El Mahdioui','DM',3000000],
-  ['bach','Anas Bach','DM',1700000],
-  ['hrimat','Mohamed Rabie Hrimat','DM',1500000],
+  {id:'targhalline',name:'Oussama Targhalline',position:'DM',value:16000000},
+  {id:'amrabat',name:'Sofyan Amrabat',position:'DM',value:10000000},
+  {id:'belahyane',name:'Reda Belahyane',position:'DM',value:6800000},
+  {id:'el-mahdioui',name:'Aschraf El Mahdioui',position:'DM',value:3000000},
+  {id:'bach',name:'Anas Bach',position:'DM',value:1700000},
+  {id:'hrimat',name:'Mohamed Rabie Hrimat',position:'DM',value:1500000},
 
   // Central midfielders
-  ['bouaddi','Ayyoub Bouaddi','CM',50000000],
-  ['el-aynaoui','Neil El Aynaoui','CM',23000000],
-  ['el-mourabet','Samir El Mourabet','CM',22000000],
-  ['louza','Imrân Louza','CM',14000000],
-  ['ounahi','Azzedine Ounahi','CM',10000000],
-  ['el-faouzi','Soufiane El-Faouzi','CM',9000000],
-  ['khairi','Ayoub Khairi','CM',1200000],
-  ['el-karti','Walid El Karti','CM',850000],
+  {id:'bouaddi',name:'Ayyoub Bouaddi',position:'CM',value:90000000},
+  {id:'el-aynaoui',name:'Neil El Aynaoui',position:'CM',value:23000000},
+  {id:'el-mourabet',name:'Samir El Mourabet',position:'CM',value:22000000},
+  {id:'louza',name:'Imrân Louza',position:'CM',value:14000000},
+  {id:'ounahi',name:'Azzedine Ounahi',position:'CM',value:10000000},
+  {id:'el-faouzi',name:'Soufiane El-Faouzi',position:'CM',value:9000000},
+  {id:'nadir',name:'Bilal Nadir',position:'CM',value:8000000},
+  {id:'belkhdim',name:'Yassin Belkhdim',position:'CM',value:7000000},
+  {id:'khairi',name:'Ayoub Khairi',position:'CM',value:1200000},
+  {id:'el-karti',name:'Walid El Karti',position:'CM',value:850000},
 
   // Attacking midfielders
-  ['saibari','Ismael Saibari','CAM',40000000],
-  ['el-khannouss','Bilal El Khannouss','CAM',35000000],
-  ['bounida','Rayane Bounida','CAM',5000000],
-  ['boufal','Sofiane Boufal','CAM',1800000],
-  ['zouhzouh','Amine Zouhzouh','CAM',1800000],
-  ['tannane','Oussama Tannane','CAM',1000000],
-  ['essadak','Hossam Essadak','CAM',1000000],
-  ['ait-ouarkhane','Khalid Aït Ouarkhane','CAM',900000],
-  ['bougrine','Sabir Bougrine','CAM',450000],
-  ['hajji','Reda Hajji','CAM',75000],
+  {id:'saibari',name:'Ismael Saibari',position:'CAM',value:40000000},
+  {id:'el-khannouss',name:'Bilal El Khannouss',position:'CAM',value:35000000},
+  {id:'ouazane',name:'Abdellah Ouazane',position:'CAM',value:8000000},
+  {id:'bounida',name:'Rayane Bounida',position:'CAM',value:5000000},
+  {id:'chair',name:'Ilias Chair',position:'CAM',value:5000000},
+  {id:'boufal',name:'Sofiane Boufal',position:'CAM',value:1800000},
+  {id:'zouhzouh',name:'Amine Zouhzouh',position:'CAM',value:1800000},
+  {id:'tannane',name:'Oussama Tannane',position:'CAM',value:1000000},
+  {id:'essadak',name:'Hossam Essadak',position:'CAM',value:1000000},
+  {id:'ait-ouarkhane',name:'Khalid Aït Ouarkhane',position:'CAM',value:900000},
 
   // Left wingers
-  ['abde','Abde Ezzalzouli','LW',40000000],
-  ['adli','Amine Adli','LW',20000000],
-  ['ben-seghir','Eliesse Ben Seghir','LW',20000000],
-  ['sofiane-diop','Sofiane Diop','LW',15000000],
-  ['sbai','Amine Sbaï','LW',4000000],
-  ['chouiar','Mounir Chouiar','LW',2800000],
-  ['mehri','Youssef Mehri','LW',1200000],
-  ['el-mahraoui','Anas El Mahraoui','LW',400000],
-  ['bouhra','Saifeddine Bouhra','LW',300000],
+  {id:'abde',name:'Abde Ezzalzouli',position:'LW',value:40000000},
+  {id:'adli',name:'Amine Adli',position:'LW',value:20000000},
+  {id:'ben-seghir',name:'Eliesse Ben Seghir',position:'LW',value:20000000},
+  {id:'sofiane-diop',name:'Sofiane Diop',position:'LW',value:15000000},
+  {id:'id­rissi',name:'Oussama Idrissi',position:'LW',value:6000000},
+  {id:'harit',name:'Amine Harit',position:'LW',value:5000000},
+  {id:'sbai',name:'Amine Sbaï',position:'LW',value:4000000},
+  {id:'chouiar',name:'Mounir Chouiar',position:'LW',value:2800000},
+  {id:'mehri',name:'Youssef Mehri',position:'LW',value:1200000},
+  {id:'el-mahraoui',name:'Anas El Mahraoui',position:'LW',value:400000},
 
   // Right wingers
-  ['brahim','Brahim Díaz','RW',35000000],
-  ['talbi','Chemsdine Talbi','RW',25000000],
-  ['akhomach','Ilias Akhomach','RW',12000000],
-  ['gessime','Gessime Yassine','RW',12000000],
-  ['amaimouni','Ayoube Amaimouni-Echghouyab','RW',10000000],
-  ['maamma','Othmane Maamma','RW',8000000],
-  ['souane','Amine Souane','RW',900000],
-  ['errahouli','Salaheddine Errahouli','RW',500000],
-  ['riahi','Imad Riahi','RW',450000],
-  ['baba','Khalid Baba','RW',450000],
+  {id:'brahim',name:'Brahim Díaz',position:'RW',value:35000000},
+  {id:'talbi',name:'Chemsdine Talbi',position:'RW',value:25000000},
+  {id:'gessime',name:'Gessime Yassine',position:'RW',value:20000000},
+  {id:'akhomach',name:'Ilias Akhomach',position:'RW',value:12000000},
+  {id:'amaimouni',name:'Ayoube Amaimouni-Echghouyab',position:'RW',value:10000000},
+  {id:'aboukhlal',name:'Zakaria Aboukhlal',position:'RW',value:6000000},
+  {id:'maamma',name:'Othmane Maamma',position:'RW',value:5000000},
+  {id:'oufkir',name:'Ayoub Oufkir',position:'RW',value:3000000},
 
   // Centre-forwards
-  ['igamane','Hamza Igamane','ST',18000000],
-  ['ennesyri','Youssef En-Nesyri','ST',17000000],
-  ['begraoui','Yanis Begraoui','ST',12000000],
-  ['zabiri','Yassir Zabiri','ST',9000000],
-  ['bentayeb-st','Tawfik Bentayeb','ST',8000000],
-  ['rahimi','Soufiane Rahimi','ST',6000000],
-  ['el-kaabi','Ayoub El Kaabi','ST',4500000],
-  ['azaro','Walid Azaro','ST',3000000],
-  ['sannadi','Maroan Sannadi','ST',3000000],
-  ['tissoudali','Tarik Tissoudali','ST',2500000],
-  ['benjdida','Soufiane Benjdida','ST',2200000],
-  ['hamdallah','Abderrazak Hamdallah','ST',1000000],
-  ['el-berkaoui','Karim El Berkaoui','ST',1000000],
-  ['lamlioui','Oussama Lamlioui','ST',850000],
-  ['mouloua','Ayoub Mouloua','ST',750000],
-  ['hannouri','Hamza Hannouri','ST',700000],
-  ['youness-el-kaabi','Youness El Kaabi','ST',200000]
+  {id:'zabiri',name:'Yassir Zabiri',position:'ST',value:20000000},
+  {id:'igamane',name:'Hamza Igamane',position:'ST',value:18000000},
+  {id:'ennesyri',name:'Youssef En-Nesyri',position:'ST',value:17000000},
+  {id:'begraoui',name:'Yanis Begraoui',position:'ST',value:12000000},
+  {id:'rahimi',name:'Soufiane Rahimi',position:'ST',value:6000000},
+  {id:'el-kaabi',name:'Ayoub El Kaabi',position:'ST',value:4000000},
+  {id:'azaro',name:'Walid Azaro',position:'ST',value:3000000},
+  {id:'sannadi',name:'Maroan Sannadi',position:'ST',value:3000000},
+  {id:'tissoudali',name:'Tarik Tissoudali',position:'ST',value:2500000},
+  {id:'benjdida',name:'Soufiane Benjdida',position:'ST',value:2200000}
 ];
 
-const players = rawPlayers.map(([id,name,primary,marketValue]) => ({
-  id, name, primary, marketValue,
-  status: currentNames.has(name) ? 'current' : 'extended',
-  initials: name.split(/\s+/).filter(Boolean).slice(0,2).map(part=>part[0]).join('').toUpperCase()
-}));
-
 const roles = {
-  GK:{name:'Goalkeeper',abbr:'GK',intro:'The last line. Ranked by Transfermarkt market value within Morocco’s extended national-team pool.'},
-  RB:{name:'Right back',abbr:'RB',intro:'Right-sided defenders, sorted by their displayed Transfermarkt market values.'},
-  CB:{name:'Centre-back',abbr:'CB',intro:'The central-defence pool. The two centre-back slots on the formation share this one unique player list.'},
-  LB:{name:'Left back',abbr:'LB',intro:'Left-sided defenders, sorted by their displayed Transfermarkt market values.'},
-  DM:{name:'Defensive midfield',abbr:'DM',intro:'The deeper midfield role: screening the defence and supporting build-up.'},
-  CM:{name:'Central midfield',abbr:'CM',intro:'Central midfielders, sorted by their displayed Transfermarkt market values.'},
-  CAM:{name:'Attacking midfield',abbr:'CAM',intro:'Creative midfielders connecting the central areas to the front line.'},
-  RW:{name:'Right winger',abbr:'RW',intro:'Right-sided wide attackers, sorted by their displayed Transfermarkt market values.'},
-  LW:{name:'Left winger',abbr:'LW',intro:'Left-sided wide attackers, sorted by their displayed Transfermarkt market values.'},
-  ST:{name:'Centre-forward',abbr:'ST',intro:'Central forwards, sorted by their displayed Transfermarkt market values.'}
+  GK:{name:'Goalkeeper',code:'GK',intro:'Goalkeepers ranked by estimated market value.'},
+  RB:{name:'Right back',code:'RB',intro:'Right-sided full-backs ranked by estimated market value.'},
+  CB:{name:'Centre-back',code:'CB',intro:'Central defenders. The two centre-back slots share one primary-position pool; each slot is assigned a different player.'},
+  LB:{name:'Left back',code:'LB',intro:'Left-sided full-backs ranked by their listed primary position.'},
+  DM:{name:'Defensive midfield',code:'DM',intro:'Ball-winning and holding midfielders. The two pivot slots are filled by different players from this position group.'},
+  CM:{name:'Central midfield',code:'CM',intro:'Central midfielders ranked by estimated market value.'},
+  CAM:{name:'Attacking midfield',code:'CAM',intro:'Attacking midfielders and central creators ranked by market value.'},
+  RW:{name:'Right winger',code:'RW',intro:'Right-sided wide forwards ranked by their listed primary position.'},
+  LW:{name:'Left winger',code:'LW',intro:'Left-sided wide forwards ranked by their listed primary position.'},
+  ST:{name:'Centre-forward',code:'ST',intro:'Central forwards ranked by estimated market value.'}
 };
 
 const roleOrder = ['GK','RB','CB','LB','DM','CM','CAM','RW','LW','ST'];
-const roleNames = {
-  GK:'Goalkeeper',RB:'Right back',CB:'Centre-back',LB:'Left back',
-  DM:'Defensive midfielder',CM:'Central midfielder',CAM:'Attacking midfielder',
-  RW:'Right winger',LW:'Left winger',ST:'Centre-forward'
-};
-const formatValue = value => value >= 1000000
-  ? `€${(value/1000000).toLocaleString('en-GB',{maximumFractionDigits:2})}m`
+const playersById = new Map(players.map(player=>[player.id,player]));
+const normaliseName = name => name.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+
+if (playersById.size !== players.length) throw new Error('Duplicate player IDs in player data.');
+if (new Set(players.map(p=>normaliseName(p.name))).size !== players.length) throw new Error('A player appears more than once. Each player must have one primary position.');
+if (players.some(p=>!roles[p.position])) throw new Error('A player has an unmapped primary position.');
+if (players.some(p=>!Number.isFinite(p.value)||p.value<0)) throw new Error('A player has an invalid market value.');
+
+const valueRanked = role => players
+  .filter(p=>p.position===role)
+  .sort((a,b)=>b.value-a.value || a.name.localeCompare(b.name))
+  .slice(0,10);
+const allRanked = () => [...players].sort((a,b)=>b.value-a.value || a.name.localeCompare(b.name));
+const formatValue = value => value>=1000000
+  ? `€${(value/1000000).toLocaleString('en-GB',{minimumFractionDigits:1,maximumFractionDigits:1})}m`
   : `€${Math.round(value/1000).toLocaleString('en-GB')}k`;
-const escapeHTML = str => String(str).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-const initials = name => name.split(/\s+/).filter(Boolean).slice(0,2).map(s => s[0]).join('').toUpperCase();
-const sortedByValue = list => [...list].sort((a,b)=>b.marketValue-a.marketValue || a.name.localeCompare(b.name));
-const allIds = players.map(p=>p.id);
-if (new Set(allIds).size !== allIds.length) throw new Error('Duplicate player IDs in squad data.');
-if (new Set(players.map(p=>p.name.toLocaleLowerCase())).size !== players.length) throw new Error('Duplicate player names across positions.');
-if (players.some(p=>!roles[p.primary])) throw new Error('A player has an unmapped primary position.');
+const escapeHTML = value => String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const makeInitials = name => name.split(/\s+/).filter(Boolean).slice(0,2).map(part=>part[0]).join('').toUpperCase();
 
 let selectedRole = 'ST';
-let activeFilter = 'all';
-let activePoolFilter = 'all';
+let selectedNodeId = 'node-st';
 let searchTerm = '';
-
-const poolForRole = role => sortedByValue(players.filter(p=>p.primary===role));
-const visibleForRole = role => {
-  const list = poolForRole(role);
-  return activeFilter === 'current'
-    ? list.filter(p=>p.status==='current')
-    : list.slice(0,10);
-};
 
 function renderFormation(){
   document.querySelectorAll('.position-node').forEach(node=>{
     const role=node.dataset.role;
-    const index=Number(node.dataset.rank||0);
-    const sorted=poolForRole(role);
-    const leader=sorted[index]||sorted[0];
-    const count=poolForRole(role).length;
-    node.classList.toggle('selected',role===selectedRole);
+    const slot=Number(node.dataset.slotIndex||0);
+    const options=valueRanked(role);
+    const player=options[slot];
+    node.classList.toggle('selected',node.dataset.nodeId===selectedNodeId);
     const nameEl=node.querySelector('strong');
     const countEl=node.querySelector('.node-count');
-    if(nameEl) nameEl.textContent=leader?leader.name:'No player';
-    if(countEl) countEl.innerHTML=`${Math.min(count,10)} ranked <i>↗</i>`;
+    if(nameEl) nameEl.textContent=player?player.name:'No listed option';
+    if(countEl) countEl.innerHTML=`${options.length} ranked <i>↗</i>`;
   });
 }
 
-function renderRole(role){
-  selectedRole = role;
-  const info = roles[role];
-  document.querySelectorAll('.position-node').forEach(node => node.classList.toggle('selected',node.dataset.role===role));
-  document.getElementById('depth-title').innerHTML = `${escapeHTML(info.name)} <span>${role}</span>`;
-  document.getElementById('depth-intro').textContent = info.intro;
-  document.getElementById('role-index').textContent = `${String(roleOrder.indexOf(role)+1).padStart(2,'0')} / 10`;
-  const ids = visibleForRole(role);
-  const list = document.getElementById('depth-list');
-  list.innerHTML = ids.map((p,index)=>{
-    return `<button class="depth-row" type="button" data-player="${p.id}"><span class="depth-rank">${String(index+1).padStart(2,'0')}</span><span><span class="depth-player-name">${escapeHTML(p.name)}</span><span class="depth-player-meta">${escapeHTML(p.primary)} · ${p.status==='current'?'Senior squad':'Extended squad'}</span></span><span class="value-tag">${formatValue(p.marketValue)}</span><span class="arrow">↗</span></button>`;
-  }).join('') || '<div class="empty-state">No players in this group.</div>';
-  document.getElementById('depth-count').textContent = `${ids.length} ${ids.length===1?'player':'players'}`;
-  document.querySelectorAll('.filter-chip').forEach(b=>b.classList.toggle('active',b.dataset.filter===activeFilter));
-  list.querySelectorAll('[data-player]').forEach(btn=>btn.addEventListener('click',()=>openPlayer(btn.dataset.player)));
+function renderRole(role,nodeId=selectedNodeId){
+  selectedRole=role;
+  selectedNodeId=nodeId;
+  const info=roles[role];
+  const options=valueRanked(role);
+  const positionIndex=roleOrder.indexOf(role)+1;
+  document.getElementById('depth-title').innerHTML=`${escapeHTML(info.name)} <span>${role}</span>`;
+  document.getElementById('depth-intro').textContent=info.intro;
+  document.getElementById('role-index').textContent=`${String(positionIndex).padStart(2,'0')} / 10`;
+  document.getElementById('depth-count').textContent=`${options.length} ranked ${options.length===1?'player':'players'}`;
+  document.getElementById('depth-list').innerHTML=options.map((player,index)=>`
+    <button class="depth-row" type="button" data-player="${player.id}">
+      <span class="depth-rank">${String(index+1).padStart(2,'0')}</span>
+      <span><span class="depth-player-name">${escapeHTML(player.name)}</span><span class="depth-player-meta">${player.position} · primary position</span></span>
+      <span class="value-tag">${formatValue(player.value)}</span>
+      <span class="arrow">↗</span>
+    </button>`).join('') || '<div class="empty-state">No players found for this position.</div>';
+  document.getElementById('depth-list').querySelectorAll('[data-player]').forEach(button=>{
+    button.addEventListener('click',()=>openPlayer(button.dataset.player));
+  });
+  document.querySelectorAll('.position-node').forEach(node=>node.classList.toggle('selected',node.dataset.nodeId===selectedNodeId));
   renderFormation();
 }
 
 function renderPool(){
-  const grid = document.getElementById('player-grid');
-  const filtered = sortedByValue(players).filter(p=>{
-    const poolMatch = activePoolFilter==='all'
-      || (activePoolFilter==='current' ? p.status==='current' : p.status==='extended');
-    const text = `${p.name} ${p.primary} ${roleNames[p.primary]}`.toLowerCase();
-    const searchMatch = !searchTerm || text.includes(searchTerm.toLowerCase());
-    return poolMatch && searchMatch;
+  const filtered=allRanked().filter(player=>{
+    const query=`${player.name} ${player.position} ${roles[player.position].name}`.toLowerCase();
+    return !searchTerm || query.includes(searchTerm.toLowerCase());
   });
-  grid.innerHTML = filtered.map(p=>`<button class="player-card" type="button" data-player="${p.id}"><span class="player-monogram">${p.initials||initials(p.name)}</span><span class="player-card-info"><span class="player-card-name">${escapeHTML(p.name)}</span><span class="player-card-role">${escapeHTML(p.primary)} · ${escapeHTML(roleNames[p.primary])}</span><span class="player-card-value">${formatValue(p.marketValue)}</span><span class="player-card-status ${p.status==='extended'?'extended':''}">${p.status==='current'?'SENIOR SQUAD':'EXTENDED POOL'}</span></span></button>`).join('');
-  document.getElementById('empty-state').hidden = filtered.length>0;
-  grid.querySelectorAll('[data-player]').forEach(btn=>btn.addEventListener('click',()=>openPlayer(btn.dataset.player)));
+  document.getElementById('player-grid').innerHTML=filtered.map(player=>`
+    <button class="player-card" type="button" data-player="${player.id}">
+      <span class="player-monogram">${makeInitials(player.name)}</span>
+      <span class="player-card-info">
+        <span class="player-card-name">${escapeHTML(player.name)}</span>
+        <span class="player-card-role">${player.position} · ${escapeHTML(roles[player.position].name)}</span>
+        <span class="player-card-value">${formatValue(player.value)}</span>
+      </span>
+    </button>`).join('');
+  document.getElementById('empty-state').hidden=filtered.length>0;
   document.getElementById('all-count').textContent=players.length;
-  document.getElementById('current-count').textContent=players.filter(p=>p.status==='current').length;
-  document.getElementById('extended-count').textContent=players.filter(p=>p.status==='extended').length;
+  document.getElementById('player-grid').querySelectorAll('[data-player]').forEach(button=>{
+    button.addEventListener('click',()=>openPlayer(button.dataset.player));
+  });
 }
 
 function openPlayer(id){
-  const p=players.find(player=>player.id===id); if(!p) return;
-  document.getElementById('modal-avatar').textContent=p.initials||initials(p.name);
-  document.getElementById('modal-name').textContent=p.name;
-  document.getElementById('modal-status').textContent=p.status==='current'?'CURRENT SENIOR SQUAD':'MOROCCO EXTENDED SQUAD';
-  document.getElementById('modal-role').textContent=`${p.primary} · ${roleNames[p.primary]}`;
-  document.getElementById('modal-value').textContent=formatValue(p.marketValue);
-  document.getElementById('modal-pool').textContent=p.status==='current'?'Latest senior squad':'Extended squad pool';
-  document.getElementById('modal-note').textContent='Transfermarkt lists this player in Morocco’s extended national-team squad. The figure shown is an estimated market value, not a transfer fee or a rating of playing ability.';
-  document.getElementById('modal-source').href=SOURCE_URL;
-  const modal=document.getElementById('player-modal'); modal.hidden=false; document.body.style.overflow='hidden';
+  const player=playersById.get(id);
+  if(!player) return;
+  document.getElementById('modal-avatar').textContent=makeInitials(player.name);
+  document.getElementById('modal-name').textContent=player.name;
+  document.getElementById('modal-status').textContent='MOROCCO PLAYER POOL · VALUE RANKED';
+  document.getElementById('modal-role').textContent=`${player.position} · ${roles[player.position].name}`;
+  document.getElementById('modal-value').textContent=formatValue(player.value);
+  document.getElementById('modal-note').textContent=`Market value snapshot: ${DATA_SNAPSHOT}. Values are estimates, not transfer fees or player-performance ratings.`;
+  document.getElementById('modal-source-promatch').href=PROMATCH_URL;
+  document.getElementById('modal-source-tm').href=TRANSFERMARKT_MARKET_URL;
+  const modal=document.getElementById('player-modal');
+  modal.hidden=false;
+  document.body.style.overflow='hidden';
   document.getElementById('modal-close').focus();
 }
-function closePlayer(){document.getElementById('player-modal').hidden=true;document.body.style.overflow='';}
 
-document.querySelectorAll('.position-node').forEach(node=>node.addEventListener('click',()=>{activeFilter='all';renderRole(node.dataset.role);}));
-document.querySelectorAll('.filter-chip').forEach(btn=>btn.addEventListener('click',()=>{activeFilter=btn.dataset.filter;renderRole(selectedRole);}));
-document.querySelectorAll('.pool-tab').forEach(btn=>btn.addEventListener('click',()=>{activePoolFilter=btn.dataset.poolFilter;document.querySelectorAll('.pool-tab').forEach(b=>b.classList.toggle('active',b===btn));renderPool();}));
-document.getElementById('player-search').addEventListener('input',e=>{searchTerm=e.target.value.trim();renderPool();});
+function closePlayer(){
+  document.getElementById('player-modal').hidden=true;
+  document.body.style.overflow='';
+}
+
+document.querySelectorAll('.position-node').forEach(node=>{
+  node.addEventListener('click',()=>renderRole(node.dataset.role,node.dataset.nodeId));
+});
+document.getElementById('player-search').addEventListener('input',event=>{
+  searchTerm=event.target.value.trim();
+  renderPool();
+});
 document.getElementById('modal-close').addEventListener('click',closePlayer);
-document.getElementById('player-modal').addEventListener('click',e=>{if(e.target.id==='player-modal')closePlayer();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!document.getElementById('player-modal').hidden)closePlayer();});
-document.getElementById('theme-toggle').addEventListener('click',()=>{document.body.classList.toggle('dark');const dark=document.body.classList.contains('dark');document.querySelector('meta[name="theme-color"]').setAttribute('content',dark?'#111713':'#f4f5f1');});
+document.getElementById('player-modal').addEventListener('click',event=>{
+  if(event.target.id==='player-modal') closePlayer();
+});
+document.addEventListener('keydown',event=>{
+  if(event.key==='Escape'&&!document.getElementById('player-modal').hidden) closePlayer();
+});
+document.getElementById('theme-toggle').addEventListener('click',()=>{
+  document.body.classList.toggle('dark');
+  const dark=document.body.classList.contains('dark');
+  document.querySelector('meta[name="theme-color"]').setAttribute('content',dark?'#111713':'#f4f5f1');
+});
 
-renderRole(selectedRole);
-renderPool();
 document.getElementById('stat-players').textContent=players.length;
 document.getElementById('stat-positions').textContent=roleOrder.length;
-document.getElementById('stat-squad').textContent=players.filter(p=>p.status==='current').length;
+document.getElementById('stat-top').textContent='10';
+document.getElementById('data-snapshot').textContent=DATA_SNAPSHOT;
+renderRole(selectedRole,'node-st');
+renderPool();
