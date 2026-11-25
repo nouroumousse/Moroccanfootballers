@@ -1,68 +1,201 @@
-const players = [
-  // Latest 26-man senior selection announced 4 November 2026.
-  {id:'bounou',name:'Yassine Bounou',short:'Bono',initials:'YB',primary:'GK',status:'current',note:'First-choice goalkeeper in the latest announced senior squad.'},
-  {id:'munir',name:'Munir Mohamedi',short:'Munir',initials:'MM',primary:'GK',status:'current',note:'Goalkeeper selected in the latest announced senior squad.'},
-  {id:'tagnaouti',name:'Ahmed Reda Tagnaouti',short:'Tagnaouti',initials:'AT',primary:'GK',status:'current',note:'Goalkeeper selected in the latest announced senior squad.'},
-  {id:'bellaarouch',name:'Alaa Bellaarouch',short:'Bellaarouch',initials:'AB',primary:'GK',status:'current',note:'Young goalkeeper selected in the latest announced senior squad.'},
-  {id:'hakimi',name:'Achraf Hakimi',short:'Hakimi',initials:'AH',primary:'RB',status:'current',note:'Right-sided defender and one of the senior squad’s established leaders.'},
-  {id:'mazraoui',name:'Noussair Mazraoui',short:'Mazraoui',initials:'NM',primary:'RB',status:'current',note:'Defender who can cover either full-back role.'},
-  {id:'salah-eddine',name:'Anass Salah-Eddine',short:'Salah-Eddine',initials:'AS',primary:'LB',status:'current',note:'Left-sided defender selected in the latest senior squad.'},
-  {id:'el-karouani',name:'Soufiane El Karouani',short:'El Karouani',initials:'SE',primary:'LB',status:'current',note:'Left-back option in the latest senior squad.'},
-  {id:'aguerd',name:'Nayef Aguerd',short:'Aguerd',initials:'NA',primary:'CB',status:'current',note:'Centre-back selected in the latest senior squad.'},
-  {id:'halhal',name:'Redouane Halhal',short:'Halhal',initials:'RH',primary:'CB',status:'current',note:'Centre-back selected in the latest senior squad.'},
-  {id:'diop',name:'Issa Diop',short:'Diop',initials:'ID',primary:'CB',status:'current',note:'Centre-back selected in the latest senior squad.'},
-  {id:'ait-boudlal',name:'Abdelhamid Aït Boudlal',short:'Aït Boudlal',initials:'AB',primary:'CB',status:'current',note:'Young centre-back selected in the latest senior squad.'},
-  {id:'maamar',name:'Ali Maamar',short:'Maamar',initials:'AM',primary:'RB',status:'current',note:'Defender selected in the latest senior squad; included as a full-back option.'},
-  {id:'bouaddi',name:'Ayyoub Bouaddi',short:'Bouaddi',initials:'AB',primary:'DM',status:'current',note:'Young central midfielder selected in the latest senior squad.'},
-  {id:'el-aynaoui',name:'Neil El Aynaoui',short:'El Aynaoui',initials:'NE',primary:'DM',status:'current',note:'Central-midfield option in the latest senior squad.'},
-  {id:'targhalline',name:'Oussama Targhalline',short:'Targhalline',initials:'OT',primary:'DM',status:'current',note:'Deep-midfield option in the latest senior squad.'},
-  {id:'el-khannouss',name:'Bilal El Khannouss',short:'El Khannouss',initials:'BE',primary:'CAM',status:'current',note:'Creative central-midfield option in the latest senior squad.'},
-  {id:'belahyane',name:'Reda Belahyane',short:'Belahyane',initials:'RB',primary:'DM',status:'current',note:'Central-midfield option selected in the latest senior squad.'},
-  {id:'sbai',name:'Amine Sbaï',short:'Sbaï',initials:'AS',primary:'RW',status:'current',note:'Attacking option selected in the latest senior squad; mapped to wide roles here.'},
-  {id:'ouazane',name:'Abdellah Ouazane',short:'Ouazane',initials:'AO',primary:'CAM',status:'current',note:'Young attacking-midfield option selected in the latest senior squad.'},
-  {id:'brahim',name:'Brahim Díaz',short:'Brahim',initials:'BD',primary:'RW',status:'current',note:'Attacking midfielder/forward selected in the latest senior squad.'},
-  {id:'gessime',name:'Yassine Gessime',short:'Gessime',initials:'YG',primary:'RW',status:'current',note:'Wide attacking option selected in the latest senior squad.'},
-  {id:'abde',name:'Abdessamad Ezzalzouli',short:'Abde',initials:'AE',primary:'LW',status:'current',note:'Left-sided forward selected in the latest senior squad.'},
-  {id:'oufkir',name:'Ayoub Oufkir',short:'Oufkir',initials:'AO',primary:'RW',status:'current',note:'Young attacking option selected in the latest senior squad.'},
-  {id:'ennesyri',name:'Youssef En-Nesyri',short:'En-Nesyri',initials:'YE',primary:'ST',status:'current',note:'Centre-forward recalled to the latest senior squad.'},
-  {id:'zabiri',name:'Yassir Zabiri',short:'Zabiri',initials:'YZ',primary:'ST',status:'current',note:'Young forward selected in the latest senior squad.'},
+// Morocco national-team extended pool, using Transfermarkt's primary position and displayed market value.
+// Snapshot checked 25 November 2026. Market values are estimates, not transfer fees.
+const SOURCE_URL = 'https://www.transfermarkt.com/marokko/erweiterterkader/verein/3575';
+const CURRENT_SQUAD_URL = 'https://www.transfermarkt.com/morocco/kader/verein/3575/saison_id/2026';
 
-  // Additional senior options from the 17 September 2026 squad, not in the November group.
-  {id:'saadane',name:'Marouane Saadane',short:'Saadane',initials:'MS',primary:'CB',status:'extended',note:'Included in the September 2026 senior squad; not in the November group.'},
-  {id:'el-ouahdi',name:'Zakaria El Ouahdi',short:'El Ouahdi',initials:'ZE',primary:'RB',status:'extended',note:'Included in the September 2026 senior squad; not in the November group.'},
-  {id:'el-mourabet',name:'Samir El Mourabet',short:'El Mourabet',initials:'SM',primary:'DM',status:'extended',note:'Included in the September 2026 senior squad; not in the November group.'},
-  {id:'el-faouzi',name:'Soufian El Faouzi',short:'El Faouzi',initials:'SF',primary:'LW',status:'extended',note:'Included in the September 2026 senior squad; not in the November group.'},
-  {id:'ounahi',name:'Azzedine Ounahi',short:'Ounahi',initials:'AO',primary:'CM',status:'extended',note:'Included in the September 2026 senior squad; not in the November group.'},
-  {id:'saibari',name:'Ismaël Saibari',short:'Saibari',initials:'IS',primary:'CAM',status:'extended',note:'Included in the September 2026 senior squad; not in the November group.'},
-  {id:'rahimi',name:'Soufiane Rahimi',short:'Rahimi',initials:'SR',primary:'LW',status:'extended',note:'Included in the September 2026 senior squad; not in the November group.'},
-  {id:'bentayeb',name:'Tawfik Bentayeb',short:'Bentayeb',initials:'TB',primary:'ST',status:'extended',note:'Included in the September 2026 senior squad; not in the November group.'}
+const currentNames = new Set([
+  'Yassine Bounou','Ahmed Reda Tagnaouti','Munir El Kajoui',
+  'Chadi Riad','Issa Diop','Redouane Halhal','Marwane Saadane',
+  'Anass Salah-Eddine','Youssef Belammari',
+  'Achraf Hakimi','Noussair Mazraoui','Zakaria El Ouahdi',
+  'Sofyan Amrabat',
+  'Ayyoub Bouaddi','Neil El Aynaoui','Samir El Mourabet','Azzedine Ounahi',
+  'Ismael Saibari','Bilal El Khannouss','Amine Sbaï',
+  'Brahim Díaz','Chemsdine Talbi','Gessime Yassine','Ayoube Amaimouni-Echghouyab',
+  'Soufiane Rahimi','Ayoub El Kaabi'
+]);
+
+const rawPlayers = [
+  // Goalkeepers
+  ['bounou','Yassine Bounou','GK',3000000],
+  ['benabid','El Mehdi Benabid','GK',1500000],
+  ['al-harrar','El Mehdi Al Harrar','GK',1000000],
+  ['tagnaouti','Ahmed Reda Tagnaouti','GK',1000000],
+  ['chihab','Salaheddine Chihab','GK',900000],
+  ['munir','Munir El Kajoui','GK',600000],
+  ['ghanimi','Rachid Ghanimi','GK',325000],
+  ['benchaouch','Yanis Benchaouch','GK',75000],
+  ['gomis','Ibrahim Gomis','GK',50000],
+
+  // Centre-backs
+  ['aguerd','Nayef Aguerd','CB',15000000],
+  ['chadi-riad','Chadi Riad','CB',15000000],
+  ['ait-boudlal','Abdelhamid Aït Boudlal','CB',12000000],
+  ['diop','Issa Diop','CB',8000000],
+  ['halhal','Redouane Halhal','CB',5000000],
+  ['baouf',"Ismaël Baouf",'CB',3000000],
+  ['bouftini','Soufiane Bouftini','CB',1300000],
+  ['saiss','Romain Saïss','CB',1200000],
+  ['masina','Adam Masina','CB',1000000],
+  ['assal','Abdelhak Assal','CB',800000],
+  ['louadni','Marouane Louadni','CB',600000],
+  ['saadane','Marwane Saadane','CB',400000],
+  ['mchakhchekh','Mehdi Mchakhchekh','CB',325000],
+  ['elyamiq','Jawad El Yamiq','CB',300000],
+
+  // Left-backs
+  ['el-karouani','Souffian El Karouani','LB',15000000],
+  ['salah-eddine','Anass Salah-Eddine','LB',12000000],
+  ['zahouani','Fouad Zahouani','LB',1200000],
+  ['belammari','Youssef Belammari','LB',1200000],
+  ['bentayg','Mahmoud Bentayg','LB',1000000],
+  ['el-moussaoui','Hamza El Moussaoui','LB',700000],
+
+  // Right-backs
+  ['hakimi','Achraf Hakimi','RB',80000000],
+  ['mazraoui','Noussair Mazraoui','RB',18000000],
+  ['el-ouahdi','Zakaria El Ouahdi','RB',17000000],
+  ['el-hilali','Omar El Hilali','RB',15000000],
+  ['maamar','Ali Maamar','RB',2500000],
+  ['chibi','Mohamed Chibi','RB',1000000],
+  ['moufid','Mohamed Moufid','RB',1000000],
+  ['boulacsout','Mohamed Boulacsout','RB',700000],
+
+  // Defensive midfielders
+  ['targhalline','Oussama Targhalline','DM',16000000],
+  ['amrabat','Sofyan Amrabat','DM',10000000],
+  ['el-mahdioui','Aschraf El Mahdioui','DM',3000000],
+  ['bach','Anas Bach','DM',1700000],
+  ['hrimat','Mohamed Rabie Hrimat','DM',1500000],
+
+  // Central midfielders
+  ['bouaddi','Ayyoub Bouaddi','CM',50000000],
+  ['el-aynaoui','Neil El Aynaoui','CM',23000000],
+  ['el-mourabet','Samir El Mourabet','CM',22000000],
+  ['louza','Imrân Louza','CM',14000000],
+  ['ounahi','Azzedine Ounahi','CM',10000000],
+  ['el-faouzi','Soufiane El-Faouzi','CM',9000000],
+  ['khairi','Ayoub Khairi','CM',1200000],
+  ['el-karti','Walid El Karti','CM',850000],
+
+  // Attacking midfielders
+  ['saibari','Ismael Saibari','CAM',40000000],
+  ['el-khannouss','Bilal El Khannouss','CAM',35000000],
+  ['bounida','Rayane Bounida','CAM',5000000],
+  ['boufal','Sofiane Boufal','CAM',1800000],
+  ['zouhzouh','Amine Zouhzouh','CAM',1800000],
+  ['tannane','Oussama Tannane','CAM',1000000],
+  ['essadak','Hossam Essadak','CAM',1000000],
+  ['ait-ouarkhane','Khalid Aït Ouarkhane','CAM',900000],
+  ['bougrine','Sabir Bougrine','CAM',450000],
+  ['hajji','Reda Hajji','CAM',75000],
+
+  // Left wingers
+  ['abde','Abde Ezzalzouli','LW',40000000],
+  ['adli','Amine Adli','LW',20000000],
+  ['ben-seghir','Eliesse Ben Seghir','LW',20000000],
+  ['sofiane-diop','Sofiane Diop','LW',15000000],
+  ['sbai','Amine Sbaï','LW',4000000],
+  ['chouiar','Mounir Chouiar','LW',2800000],
+  ['mehri','Youssef Mehri','LW',1200000],
+  ['el-mahraoui','Anas El Mahraoui','LW',400000],
+  ['bouhra','Saifeddine Bouhra','LW',300000],
+
+  // Right wingers
+  ['brahim','Brahim Díaz','RW',35000000],
+  ['talbi','Chemsdine Talbi','RW',25000000],
+  ['akhomach','Ilias Akhomach','RW',12000000],
+  ['gessime','Gessime Yassine','RW',12000000],
+  ['amaimouni','Ayoube Amaimouni-Echghouyab','RW',10000000],
+  ['maamma','Othmane Maamma','RW',8000000],
+  ['souane','Amine Souane','RW',900000],
+  ['errahouli','Salaheddine Errahouli','RW',500000],
+  ['riahi','Imad Riahi','RW',450000],
+  ['baba','Khalid Baba','RW',450000],
+
+  // Centre-forwards
+  ['igamane','Hamza Igamane','ST',18000000],
+  ['ennesyri','Youssef En-Nesyri','ST',17000000],
+  ['begraoui','Yanis Begraoui','ST',12000000],
+  ['zabiri','Yassir Zabiri','ST',9000000],
+  ['bentayeb-st','Tawfik Bentayeb','ST',8000000],
+  ['rahimi','Soufiane Rahimi','ST',6000000],
+  ['el-kaabi','Ayoub El Kaabi','ST',4500000],
+  ['azaro','Walid Azaro','ST',3000000],
+  ['sannadi','Maroan Sannadi','ST',3000000],
+  ['tissoudali','Tarik Tissoudali','ST',2500000],
+  ['benjdida','Soufiane Benjdida','ST',2200000],
+  ['hamdallah','Abderrazak Hamdallah','ST',1000000],
+  ['el-berkaoui','Karim El Berkaoui','ST',1000000],
+  ['lamlioui','Oussama Lamlioui','ST',850000],
+  ['mouloua','Ayoub Mouloua','ST',750000],
+  ['hannouri','Hamza Hannouri','ST',700000],
+  ['youness-el-kaabi','Youness El Kaabi','ST',200000]
 ];
 
+const players = rawPlayers.map(([id,name,primary,marketValue]) => ({
+  id, name, primary, marketValue,
+  status: currentNames.has(name) ? 'current' : 'extended',
+  initials: name.split(/\s+/).filter(Boolean).slice(0,2).map(part=>part[0]).join('').toUpperCase()
+}));
+
 const roles = {
-  GK:{name:'Goalkeeper',intro:'The last line. Goalkeepers included in the latest senior group.',players:['bounou','munir','tagnaouti','bellaarouch']},
-  RB:{name:'Right back',intro:'Right-sided full-backs and defenders who can cover the flank.',players:['hakimi','mazraoui','maamar','el-ouahdi']},
-  RCB:{name:'Right centre-back',intro:'Centre-backs mapped to the right side of the central pairing.',players:['aguerd','diop','halhal','ait-boudlal','saadane','mazraoui']},
-  LCB:{name:'Left centre-back',intro:'Centre-backs mapped to the left side of the central pairing.',players:['aguerd','ait-boudlal','diop','halhal','saadane','mazraoui']},
-  LB:{name:'Left back',intro:'Left-sided full-backs, with versatile defenders included as cover.',players:['el-karouani','salah-eddine','mazraoui','hakimi','el-ouahdi','maamar']},
-  LDM:{name:'Left holding midfielder',intro:'The deeper midfield pair: screening the back four and helping progression.',players:['targhalline','el-aynaoui','bouaddi','belahyane','el-mourabet','ounahi','saibari','el-khannouss']},
-  RDM:{name:'Right holding midfielder',intro:'The deeper midfield pair: ball recovery, circulation and support between the lines.',players:['el-aynaoui','bouaddi','targhalline','belahyane','el-mourabet','ounahi','saibari','el-khannouss']},
-  RW:{name:'Right winger',intro:'Wide attackers and creative forwards who can start from the right.',players:['brahim','gessime','oufkir','sbai','el-faouzi','el-khannouss','saibari','ounahi']},
-  CAM:{name:'Attacking midfielder',intro:'The central connector between midfield and the front line.',players:['el-khannouss','brahim','ounahi','saibari','ouazane','gessime','sbai']},
-  LW:{name:'Left winger',intro:'Direct wide options who can attack from the left or move inside.',players:['abde','rahimi','gessime','sbai','el-faouzi','oufkir','zabiri']},
-  ST:{name:'Striker',intro:'Central reference point. Options who can lead the line and attack the space behind.',players:['ennesyri','zabiri','bentayeb','rahimi','oufkir','abde']}
+  GK:{name:'Goalkeeper',abbr:'GK',intro:'The last line. Ranked by Transfermarkt market value within Morocco’s extended national-team pool.'},
+  RB:{name:'Right back',abbr:'RB',intro:'Right-sided defenders, sorted by their displayed Transfermarkt market values.'},
+  CB:{name:'Centre-back',abbr:'CB',intro:'The central-defence pool. The two centre-back slots on the formation share this one unique player list.'},
+  LB:{name:'Left back',abbr:'LB',intro:'Left-sided defenders, sorted by their displayed Transfermarkt market values.'},
+  DM:{name:'Defensive midfield',abbr:'DM',intro:'The deeper midfield role: screening the defence and supporting build-up.'},
+  CM:{name:'Central midfield',abbr:'CM',intro:'Central midfielders, sorted by their displayed Transfermarkt market values.'},
+  CAM:{name:'Attacking midfield',abbr:'CAM',intro:'Creative midfielders connecting the central areas to the front line.'},
+  RW:{name:'Right winger',abbr:'RW',intro:'Right-sided wide attackers, sorted by their displayed Transfermarkt market values.'},
+  LW:{name:'Left winger',abbr:'LW',intro:'Left-sided wide attackers, sorted by their displayed Transfermarkt market values.'},
+  ST:{name:'Centre-forward',abbr:'ST',intro:'Central forwards, sorted by their displayed Transfermarkt market values.'}
 };
 
-const currentXI = {ST:'ennesyri',LW:'abde',CAM:'el-khannouss',RW:'brahim',LDM:'targhalline',RDM:'el-aynaoui',LB:'el-karouani',LCB:'diop',RCB:'aguerd',RB:'hakimi',GK:'bounou'};
-const roleOrder = ['ST','LW','CAM','RW','LDM','RDM','LB','LCB','RCB','RB','GK'];
+const roleOrder = ['GK','RB','CB','LB','DM','CM','CAM','RW','LW','ST'];
+const roleNames = {
+  GK:'Goalkeeper',RB:'Right back',CB:'Centre-back',LB:'Left back',
+  DM:'Defensive midfielder',CM:'Central midfielder',CAM:'Attacking midfielder',
+  RW:'Right winger',LW:'Left winger',ST:'Centre-forward'
+};
+const formatValue = value => value >= 1000000
+  ? `€${(value/1000000).toLocaleString('en-GB',{maximumFractionDigits:2})}m`
+  : `€${Math.round(value/1000).toLocaleString('en-GB')}k`;
+const escapeHTML = str => String(str).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const initials = name => name.split(/\s+/).filter(Boolean).slice(0,2).map(s => s[0]).join('').toUpperCase();
+const sortedByValue = list => [...list].sort((a,b)=>b.marketValue-a.marketValue || a.name.localeCompare(b.name));
+const allIds = players.map(p=>p.id);
+if (new Set(allIds).size !== allIds.length) throw new Error('Duplicate player IDs in squad data.');
+if (new Set(players.map(p=>p.name.toLocaleLowerCase())).size !== players.length) throw new Error('Duplicate player names across positions.');
+if (players.some(p=>!roles[p.primary])) throw new Error('A player has an unmapped primary position.');
+
 let selectedRole = 'ST';
 let activeFilter = 'all';
 let activePoolFilter = 'all';
 let searchTerm = '';
 
-const playerById = id => players.find(p => p.id === id);
-const positionLabels = {GK:'Goalkeeper',RB:'Right back',LB:'Left back',CB:'Centre-back',DM:'Defensive midfielder',CM:'Central midfielder',CAM:'Attacking midfielder',RW:'Right winger',LW:'Left winger',ST:'Striker'};
-const escapeHTML = str => String(str).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-const initials = name => name.split(/\s+/).filter(Boolean).slice(0,2).map(s => s[0]).join('').toUpperCase();
+const poolForRole = role => sortedByValue(players.filter(p=>p.primary===role));
+const visibleForRole = role => {
+  const list = poolForRole(role);
+  return activeFilter === 'current'
+    ? list.filter(p=>p.status==='current')
+    : list.slice(0,10);
+};
+
+function renderFormation(){
+  document.querySelectorAll('.position-node').forEach(node=>{
+    const role=node.dataset.role;
+    const index=Number(node.dataset.rank||0);
+    const sorted=poolForRole(role);
+    const leader=sorted[index]||sorted[0];
+    const count=poolForRole(role).length;
+    node.classList.toggle('selected',role===selectedRole);
+    const nameEl=node.querySelector('strong');
+    const countEl=node.querySelector('.node-count');
+    if(nameEl) nameEl.textContent=leader?leader.name:'No player';
+    if(countEl) countEl.innerHTML=`${Math.min(count,10)} ranked <i>↗</i>`;
+  });
+}
 
 function renderRole(role){
   selectedRole = role;
@@ -70,44 +203,45 @@ function renderRole(role){
   document.querySelectorAll('.position-node').forEach(node => node.classList.toggle('selected',node.dataset.role===role));
   document.getElementById('depth-title').innerHTML = `${escapeHTML(info.name)} <span>${role}</span>`;
   document.getElementById('depth-intro').textContent = info.intro;
-  document.getElementById('role-index').textContent = `${String(roleOrder.indexOf(role)+1).padStart(2,'0')} / 11`;
-  const ids = info.players.filter(id => {
-    const p = playerById(id);
-    return p && (activeFilter==='all' || p.status==='current');
-  });
+  document.getElementById('role-index').textContent = `${String(roleOrder.indexOf(role)+1).padStart(2,'0')} / 10`;
+  const ids = visibleForRole(role);
   const list = document.getElementById('depth-list');
-  list.innerHTML = ids.map((id,index)=>{
-    const p=playerById(id);
-    return `<button class="depth-row" type="button" data-player="${p.id}"><span class="depth-rank">${String(index+1).padStart(2,'0')}</span><span><span class="depth-player-name">${escapeHTML(p.name)}</span><span class="depth-player-meta">${p.primary} · ${p.status==='current'?'Latest squad':'Recent call-up'}</span></span><span class="status-tag ${p.status==='extended'?'extended':''}">${p.status==='current'?'NOV 26':'SEP 26'}</span><span class="arrow">↗</span></button>`;
-  }).join('') || '<div class="empty-state">No players in this filter.</div>';
+  list.innerHTML = ids.map((p,index)=>{
+    return `<button class="depth-row" type="button" data-player="${p.id}"><span class="depth-rank">${String(index+1).padStart(2,'0')}</span><span><span class="depth-player-name">${escapeHTML(p.name)}</span><span class="depth-player-meta">${escapeHTML(p.primary)} · ${p.status==='current'?'Senior squad':'Extended squad'}</span></span><span class="value-tag">${formatValue(p.marketValue)}</span><span class="arrow">↗</span></button>`;
+  }).join('') || '<div class="empty-state">No players in this group.</div>';
   document.getElementById('depth-count').textContent = `${ids.length} ${ids.length===1?'player':'players'}`;
   document.querySelectorAll('.filter-chip').forEach(b=>b.classList.toggle('active',b.dataset.filter===activeFilter));
-  list.querySelectorAll('[data-player]').forEach(btn=>btn.addEventListener('click',()=>openPlayer(btn.dataset.player,role)));
-  document.querySelectorAll(`.position-node[data-role="${role}"] .node-count`).forEach(el=>el.innerHTML=`${ids.length} options <i>↗</i>`);
+  list.querySelectorAll('[data-player]').forEach(btn=>btn.addEventListener('click',()=>openPlayer(btn.dataset.player)));
+  renderFormation();
 }
 
 function renderPool(){
   const grid = document.getElementById('player-grid');
-  const filtered = players.filter(p=>{
-    const poolMatch = activePoolFilter==='all' || (activePoolFilter==='current' ? p.status==='current' : p.status==='extended');
-    const text = `${p.name} ${p.primary} ${roles[p.primary]?.name||''}`.toLowerCase();
+  const filtered = sortedByValue(players).filter(p=>{
+    const poolMatch = activePoolFilter==='all'
+      || (activePoolFilter==='current' ? p.status==='current' : p.status==='extended');
+    const text = `${p.name} ${p.primary} ${roleNames[p.primary]}`.toLowerCase();
     const searchMatch = !searchTerm || text.includes(searchTerm.toLowerCase());
     return poolMatch && searchMatch;
   });
-  grid.innerHTML = filtered.map(p=>`<button class="player-card" type="button" data-player="${p.id}"><span class="player-monogram">${p.initials||initials(p.name)}</span><span class="player-card-info"><span class="player-card-name">${escapeHTML(p.name)}</span><span class="player-card-role">${escapeHTML(p.primary)} · ${escapeHTML(positionLabels[p.primary]||'Footballer')}</span><span class="player-card-status ${p.status==='extended'?'extended':''}">${p.status==='current'?'LATEST SQUAD':'RECENT CALL-UP'}</span></span></button>`).join('');
+  grid.innerHTML = filtered.map(p=>`<button class="player-card" type="button" data-player="${p.id}"><span class="player-monogram">${p.initials||initials(p.name)}</span><span class="player-card-info"><span class="player-card-name">${escapeHTML(p.name)}</span><span class="player-card-role">${escapeHTML(p.primary)} · ${escapeHTML(roleNames[p.primary])}</span><span class="player-card-value">${formatValue(p.marketValue)}</span><span class="player-card-status ${p.status==='extended'?'extended':''}">${p.status==='current'?'SENIOR SQUAD':'EXTENDED POOL'}</span></span></button>`).join('');
   document.getElementById('empty-state').hidden = filtered.length>0;
   grid.querySelectorAll('[data-player]').forEach(btn=>btn.addEventListener('click',()=>openPlayer(btn.dataset.player)));
+  document.getElementById('all-count').textContent=players.length;
+  document.getElementById('current-count').textContent=players.filter(p=>p.status==='current').length;
+  document.getElementById('extended-count').textContent=players.filter(p=>p.status==='extended').length;
 }
 
-function openPlayer(id,role){
-  const p=playerById(id); if(!p) return;
+function openPlayer(id){
+  const p=players.find(player=>player.id===id); if(!p) return;
   document.getElementById('modal-avatar').textContent=p.initials||initials(p.name);
   document.getElementById('modal-name').textContent=p.name;
-  const status=document.getElementById('modal-status');
-  status.textContent=p.status==='current'?'LATEST SENIOR SQUAD · NOVEMBER 2026':'RECENT SENIOR CALL-UP · SEPTEMBER 2026';
-  document.getElementById('modal-role').textContent=role ? `${role} · ${roles[role].name}` : `${p.primary} · ${positionLabels[p.primary]||'Footballer'}`;
-  document.getElementById('modal-pool').textContent=p.status==='current'?'November selection':'September selection';
-  document.getElementById('modal-note').textContent=p.note;
+  document.getElementById('modal-status').textContent=p.status==='current'?'CURRENT SENIOR SQUAD':'MOROCCO EXTENDED SQUAD';
+  document.getElementById('modal-role').textContent=`${p.primary} · ${roleNames[p.primary]}`;
+  document.getElementById('modal-value').textContent=formatValue(p.marketValue);
+  document.getElementById('modal-pool').textContent=p.status==='current'?'Latest senior squad':'Extended squad pool';
+  document.getElementById('modal-note').textContent='Transfermarkt lists this player in Morocco’s extended national-team squad. The figure shown is an estimated market value, not a transfer fee or a rating of playing ability.';
+  document.getElementById('modal-source').href=SOURCE_URL;
   const modal=document.getElementById('player-modal'); modal.hidden=false; document.body.style.overflow='hidden';
   document.getElementById('modal-close').focus();
 }
@@ -122,8 +256,8 @@ document.getElementById('player-modal').addEventListener('click',e=>{if(e.target
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!document.getElementById('player-modal').hidden)closePlayer();});
 document.getElementById('theme-toggle').addEventListener('click',()=>{document.body.classList.toggle('dark');const dark=document.body.classList.contains('dark');document.querySelector('meta[name="theme-color"]').setAttribute('content',dark?'#111713':'#f4f5f1');});
 
-// Initial content
 renderRole(selectedRole);
 renderPool();
-document.getElementById('all-count').textContent=players.length;
-document.getElementById('stat-players').textContent=players.filter(p=>p.status==='current').length;
+document.getElementById('stat-players').textContent=players.length;
+document.getElementById('stat-positions').textContent=roleOrder.length;
+document.getElementById('stat-squad').textContent=players.filter(p=>p.status==='current').length;
